@@ -197,11 +197,6 @@ TF_CFLAGS		+=	$(CPPFLAGS) $(TF_CFLAGS_$(ARCH))		\
 				-Os -ffunction-sections -fdata-sections
 
 GCC_V_OUTPUT		:=	$(shell $(CC) -v 2>&1)
-PIE_FOUND		:=	$(findstring --enable-default-pie,${GCC_V_OUTPUT})
-
-ifneq ($(PIE_FOUND),)
-TF_CFLAGS		+=	-fno-PIE
-endif
 
 # Force the compiler to include the frame pointer
 ifeq (${ENABLE_BACKTRACE},1)
@@ -325,6 +320,16 @@ $(eval $(call MAKE_PREREQ_DIR,${BUILD_PLAT}))
 
 ifeq (${ARM_ARCH_MAJOR},7)
 include make_helpers/armv7-a-cpus.mk
+endif
+
+ifeq ($(ENABLE_PIE),1)
+    TF_CFLAGS		+=	-fpie
+    TF_LDFLAGS		+=	-pie
+else
+    PIE_FOUND		:=	$(findstring --enable-default-pie,${GCC_V_OUTPUT})
+    ifneq ($(PIE_FOUND),)
+        TF_CFLAGS		+=	-fno-PIE
+    endif
 endif
 
 # Include the CPU specific operations makefile, which provides default
@@ -563,6 +568,7 @@ $(eval $(call assert_boolean,ENABLE_AMU))
 $(eval $(call assert_boolean,ENABLE_ASSERTIONS))
 $(eval $(call assert_boolean,ENABLE_BACKTRACE))
 $(eval $(call assert_boolean,ENABLE_MPAM_FOR_LOWER_ELS))
+$(eval $(call assert_boolean,ENABLE_PIE))
 $(eval $(call assert_boolean,ENABLE_PMF))
 $(eval $(call assert_boolean,ENABLE_PSCI_STAT))
 $(eval $(call assert_boolean,ENABLE_RUNTIME_INSTRUMENTATION))
@@ -613,6 +619,7 @@ $(eval $(call add_define,ENABLE_AMU))
 $(eval $(call add_define,ENABLE_ASSERTIONS))
 $(eval $(call add_define,ENABLE_BACKTRACE))
 $(eval $(call add_define,ENABLE_MPAM_FOR_LOWER_ELS))
+$(eval $(call add_define,ENABLE_PIE))
 $(eval $(call add_define,ENABLE_PMF))
 $(eval $(call add_define,ENABLE_PSCI_STAT))
 $(eval $(call add_define,ENABLE_RUNTIME_INSTRUMENTATION))
