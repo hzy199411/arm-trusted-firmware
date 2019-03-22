@@ -22,7 +22,6 @@
 	 */
 
 func bl31_entrypoint
-#if !RESET_TO_BL31
 	/* ---------------------------------------------------------------
 	 * Stash the previous bootloader arguments x0 - x3 for later use.
 	 * ---------------------------------------------------------------
@@ -32,6 +31,18 @@ func bl31_entrypoint
 	mov	x22, x2
 	mov	x23, x3
 
+	/* --------------------------------------------------------------------
+	 * If PIE is enabled, fixup the Global descriptor Table and dynamic
+	 * relocations
+	 * --------------------------------------------------------------------
+	 */
+#if ENABLE_PIE
+	mov_imm	x0, BL31_BASE
+	mov_imm	x1, BL31_LIMIT
+	bl	fixup_gdt_reloc
+#endif /* ENABLE_PIE */
+
+#if !RESET_TO_BL31
 	/* ---------------------------------------------------------------------
 	 * For !RESET_TO_BL31 systems, only the primary CPU ever reaches
 	 * bl31_entrypoint() during the cold boot flow, so the cold/warm boot
@@ -74,17 +85,6 @@ func bl31_entrypoint
 	mov	x22, 0
 	mov	x23, 0
 #endif /* RESET_TO_BL31 */
-
-	/* --------------------------------------------------------------------
-	 * If PIE is enabled, fixup the Global descriptor Table and dynamic
-	 * relocations
-	 * --------------------------------------------------------------------
-	 */
-#if ENABLE_PIE
-	mov_imm	x0, BL31_BASE
-	mov_imm	x1, BL31_LIMIT
-	bl	fixup_gdt_reloc
-#endif /* ENABLE_PIE */
 
 	/* ---------------------------------------------
 	 * Perform platform specific early arch. setup

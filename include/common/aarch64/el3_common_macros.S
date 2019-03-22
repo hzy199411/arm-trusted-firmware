@@ -9,6 +9,7 @@
 
 #include <arch.h>
 #include <asm_macros.S>
+#include <xlat_tables_defs.h>
 
 	/*
 	 * Helper macro to initialise EL3 registers we care about.
