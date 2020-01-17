@@ -386,6 +386,7 @@ bl${1}_dirs: | ${OBJ_DIRS}
 
 $(eval $(call MAKE_OBJS,$(BUILD_DIR),$(SOURCES),$(1)))
 $(eval $(call MAKE_LD,$(LINKERFILE),$(BL_LINKERFILE),$(1)))
+$(eval BL_LDFLAGS := $(BL$(call uppercase,$(1))_LDFLAGS))
 
 ifeq ($(USE_ROMLIB),1)
 $(ELF): romlib.bin
@@ -400,7 +401,7 @@ else
 	       const char version_string[] = "${VERSION_STRING}";' | \
 		$$(CC) $$(TF_CFLAGS) $$(CFLAGS) -xc -c - -o $(BUILD_DIR)/build_message.o
 endif
-	$$(Q)$$(LD) -o $$@ $$(TF_LDFLAGS) $$(LDFLAGS) -Map=$(MAPFILE) \
+	$$(Q)$$(LD) -o $$@ $$(TF_LDFLAGS) $$(LDFLAGS) $(BL_LDFLAGS) -Map=$(MAPFILE) \
 		--script $(LINKERFILE) $(BUILD_DIR)/build_message.o \
 		$(OBJS) $(LDPATHS) $(LDLIBS) $(BL_LIBS)
 
