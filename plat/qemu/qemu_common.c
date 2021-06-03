@@ -30,6 +30,9 @@
 					SHARED_RAM_SIZE,		\
 					MT_DEVICE  | MT_RW | MT_SECURE)
 
+#define MAP_SEC_RAM0	MAP_REGION_FLAT(SEC_RAM0_BASE, SEC_RAM0_SIZE,	\
+					MT_MEMORY | MT_RW | MT_SECURE)
+
 #define MAP_BL32_MEM	MAP_REGION_FLAT(BL32_MEM_BASE, BL32_MEM_SIZE,	\
 					MT_MEMORY | MT_RW | MT_SECURE)
 
@@ -70,6 +73,7 @@ static const mmap_region_t plat_qemu_mmap[] = {
 	MAP_DEVICE2,
 #endif
 	MAP_NS_DRAM0,
+	MAP_SEC_RAM0,
 	MAP_BL32_MEM,
 	{0}
 };

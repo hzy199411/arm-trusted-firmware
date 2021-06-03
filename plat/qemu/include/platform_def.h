@@ -78,8 +78,11 @@
 #define SEC_SRAM_BASE			0x0e000000
 #define SEC_SRAM_SIZE			0x00060000
 
-#define SEC_DRAM_BASE			0x0e100000
-#define SEC_DRAM_SIZE			0x00f00000
+#define SEC_RAM0_BASE			0x0e100000
+#define SEC_RAM0_SIZE			0x00100000
+
+#define SEC_DRAM_BASE			0x0e200000
+#define SEC_DRAM_SIZE			0x00e00000
 
 /* Load pageable part of OP-TEE 2MB above secure DRAM base */
 #define QEMU_OPTEE_PAGEABLE_LOAD_BASE	(SEC_DRAM_BASE + 0x00200000)
